@@ -47,25 +47,25 @@ int main(int argc, char ** argv)
 
             if (i % 5 == 0)
             {
-                fatal_handler->logEvent(new jinx::LogMessage( "> Error message of warning error type", jinx::WARNING));
+                fatal_handler->logEvent(new jinx::LogMessage( "> Error message of warning error type\n", jinx::WARNING));
             }
             else if (i % 3 == 0)
             {
-                fatal_handler->logEvent(new jinx::LogMessage( "> Error message of error error type", jinx::ERROR));
+                fatal_handler->logEvent(new jinx::LogMessage( "> Error message of error error type\n", jinx::ERROR));
             }
             else if (i % 2 == 0)
             {
-                fatal_handler->logEvent(new jinx::LogMessage( "> Error message of fatal error type", jinx::FATAL_ERROR));
+                fatal_handler->logEvent(new jinx::LogMessage( "> Error message of fatal error type\n", jinx::FATAL_ERROR));
             }
             else
             {
-                fatal_handler->logEvent(new jinx::LogMessage( "> Error message of unknown type"));
+                fatal_handler->logEvent(new jinx::LogMessage( "> Error message of unknown type\n"));
             }            
         }
     }
     catch(const std::exception & e)
     {
-        std::cerr << e.what() << '\n';
+        std::cerr << "(!) EXCEPTION: " << e.what() << '\n';
     }
 
     } // while

@@ -4,6 +4,7 @@
 #define HW_3_CHAIN_H
 
 #include <exception>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -20,35 +21,44 @@ namespace jinx
 
     // Exceptions
 
-    class fatal_exception_handler : public std::exception
+    class fatal_exception_handler : public std::runtime_error
     {
         public:
-        const char * what () const throw () 
+
+        fatal_exception_handler(const std::string & msg = "") : msg_(msg), std::runtime_error(msg)
         {
-            // return msg_;
-            return "\nEXCEPTION!\n";
-        }
 
-        fatal_exception_handler(const std::string & msg);
+        }  
 
-        private:
-
-        const char * msg_;
-    };
-
-    class unknown_exception_handler : public std::exception
-    {
-        public:
-        const char * what () const throw () 
+        std::string & what()
         {
+            msg_ = "> Fatal Exception encountered, message: " + msg_;
+
             return msg_;
         }
 
-        unknown_exception_handler(const std::string & msg);
+        private:
+        std::string msg_;     
+    };
+
+    class unknown_exception_handler : public std::runtime_error
+    {
+        public:
+
+        unknown_exception_handler(const std::string & msg = "") : msg_(msg), std::runtime_error(msg)
+        {
+
+        }  
+
+        std::string & what()
+        {
+            msg_ = "> Unknown Exception encountered, message: " + msg_;
+
+            return msg_;
+        }
 
         private:
-
-        char * msg_;
+        std::string msg_;    
     };
 
     class Warning;
@@ -99,6 +109,8 @@ namespace jinx
         void logEvent(const LogMessage * msg) override;        
 
         private:
+
+        std::fstream file_;
     };
 
     class Fatal : public Log
@@ -108,6 +120,7 @@ namespace jinx
         void logEvent(const LogMessage * msg) override;        
 
         private:
+        std::fstream file_;
     };
 
     class Unknown : public Log

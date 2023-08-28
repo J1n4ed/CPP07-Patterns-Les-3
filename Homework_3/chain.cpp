@@ -8,25 +8,7 @@
 #include <string>
 
 namespace jinx
-{
-    // Exception
-
-    fatal_exception_handler::fatal_exception_handler(const std::string & msg)
-    {
-        std::string tmp = "\nFATAL EXCEPTION ENCOUNTERED! Error message: ";
-        tmp += msg;
-        std::cout << "\nDEBUG: exception msg = " << msg << std::endl;
-        msg_ = tmp.data();        
-    }
-
-    unknown_exception_handler::unknown_exception_handler(const std::string & msg)
-    {
-        std::string tmp = "\nUNKNOWN EXCEPTION ENCOUNTERED! Error message: ";
-        tmp += msg;
-        std::cout << "\nDEBUG: exception msg = " << msg << std::endl;
-        msg_ = tmp.data();   
-    }
-    
+{    
     // Log message class
 
     Type LogMessage::type() const
@@ -54,11 +36,15 @@ namespace jinx
 
     // Log Warning   
 
+    /*
+    Обработчик предупреждения должен напечатать сообщение в консоль.
+    */
+
     void Warning::logEvent(const LogMessage * msg)
     {
         if (msg->type() == WARNING)
         {
-            std::cout << "\nDEBUG: WARNING CALLED, MSG: " << msg->message();
+            std::cout << "\nWARNING CALLED, MSG: " << msg->message();
         }
         else if (next_)
         {
@@ -68,11 +54,17 @@ namespace jinx
 
     // Log Error    
 
+    /*
+    Обработчик обычной ошибки должен записать её в файл по указанному пути
+    */
+
     void Error::logEvent(const LogMessage * msg)
     {
         if (msg->type() == ERROR)
         {
-            std::cout << "\nDEBUG: ERROR CALLED, MSG: " << msg->message();
+            file_.open("log.txt", std::ios::app);
+            file_ << "ERROR CALLED, MSG: " << msg->message() << '\n';        
+            file_.close();
         }
         else if (next_)
         {
@@ -93,7 +85,9 @@ namespace jinx
 
         if (msg->type() == FATAL_ERROR)
         {
-            std::cout << "\nDEBUG: FATAL ERROR CALLED, MSG: " << msg->message();
+            file_.open("log.txt", std::ios::app);
+            file_ << "FATAL ERROR CALLED, MSG: " << msg->message() << '\n';        
+            file_.close();
             throw fatal_exception_handler(msg->message());
         }
         else if (next_)
@@ -104,9 +98,12 @@ namespace jinx
 
     // Log Unknown    
 
+    /*
+    Обработчик неизвестного сообщения должен выбросить исключение с текстом о необработанном сообщении
+    */
+
     void Unknown::logEvent(const LogMessage * msg)
     {
-        std::cout << "\nDEBUG: UNKNOWN ERROR CALLED, MSG: " << msg->message();      
         throw unknown_exception_handler(msg->message());  
     }
 
