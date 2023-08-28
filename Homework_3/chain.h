@@ -1,0 +1,124 @@
+// chain of responsibility header
+
+#ifndef HW_3_CHAIN_H
+#define HW_3_CHAIN_H
+
+#include <exception>
+#include <iostream>
+#include <memory>
+#include <string>
+
+namespace jinx
+{
+    enum Type
+    {
+        FATAL_ERROR,
+        ERROR,
+        WARNING,
+        UNKNOWN
+    };
+
+    // Exceptions
+
+    class fatal_exception_handler : public std::exception
+    {
+        public:
+        const char * what () const throw () 
+        {
+            // return msg_;
+            return "\nEXCEPTION!\n";
+        }
+
+        fatal_exception_handler(const std::string & msg);
+
+        private:
+
+        const char * msg_;
+    };
+
+    class unknown_exception_handler : public std::exception
+    {
+        public:
+        const char * what () const throw () 
+        {
+            return msg_;
+        }
+
+        unknown_exception_handler(const std::string & msg);
+
+        private:
+
+        char * msg_;
+    };
+
+    class Warning;
+    class Error;
+    class Fatal;
+    class Unknown;
+
+    class LogMessage {
+    public:
+        Type type() const;
+        const std::string& message() const; 
+
+        LogMessage() = delete;
+        LogMessage(std::string, Type);
+        LogMessage(std::string);
+
+    private:
+    Type type_;
+    std::string message_;
+    };
+
+    class Log
+    {
+        public:
+
+        virtual void logEvent(const LogMessage * msg) = 0;     
+        void setNext(Log *);    
+
+        virtual ~Log() = default;  
+
+        protected:
+
+        Log * next_;
+        
+    };    
+
+    class Warning : public Log
+    {  
+        public:
+
+        void logEvent(const LogMessage * msg) override;     
+    };
+
+    class Error : public Log
+    {
+        public:
+
+        void logEvent(const LogMessage * msg) override;        
+
+        private:
+    };
+
+    class Fatal : public Log
+    {
+        public:
+        
+        void logEvent(const LogMessage * msg) override;        
+
+        private:
+    };
+
+    class Unknown : public Log
+    {
+        public:
+
+        void logEvent(const LogMessage * msg) override;        
+
+        private:
+    };
+
+} // namespace jinx
+
+#endif
