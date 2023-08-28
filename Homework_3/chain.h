@@ -25,40 +25,20 @@ namespace jinx
     {
         public:
 
-        fatal_exception_handler(const std::string & msg = "") : msg_(msg), std::runtime_error(msg)
+        fatal_exception_handler(const std::string & msg = "") : std::runtime_error(msg)
         {
 
-        }  
-
-        std::string & what()
-        {
-            msg_ = "> Fatal Exception encountered, message: " + msg_;
-
-            return msg_;
-        }
-
-        private:
-        std::string msg_;     
+        }          
     };
 
     class unknown_exception_handler : public std::runtime_error
     {
         public:
 
-        unknown_exception_handler(const std::string & msg = "") : msg_(msg), std::runtime_error(msg)
+        unknown_exception_handler(const std::string & msg = "") : std::runtime_error(msg)
         {
 
-        }  
-
-        std::string & what()
-        {
-            msg_ = "> Unknown Exception encountered, message: " + msg_;
-
-            return msg_;
         }
-
-        private:
-        std::string msg_;    
     };
 
     class Warning;
